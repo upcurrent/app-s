@@ -114,6 +114,9 @@
       handleclose() {
         //console.log('handleclose');
       },
+      handleclose1() {
+        //console.log('handleclose');
+      },
       handleselect: function (a, b) {
       },
       //退出登录
