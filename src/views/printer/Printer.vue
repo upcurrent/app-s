@@ -5,6 +5,7 @@
       <el-form :inline="true" >
         <el-form-item>
           <el-button type="primary" @click="handleAdd">新增</el-button>
+          <el-button type="danger" @click="batchDel" :disabled="batchDelDisable" plain>删除</el-button>
         </el-form-item>
       </el-form>
     </el-col>
@@ -12,24 +13,28 @@
     <el-table
       :data="printers"
       border
-      style="width: 100%">
+      style="width: 100%"
+      height="700"
+      @selection-change="handleSelectionChange"
+    >
+      <el-table-column type="selection" width="40"></el-table-column>
       <el-table-column
         align="center"
         prop="name"
         label="名称"
-        width="450">
+        >
       </el-table-column>
       <el-table-column
         align="center"
         prop="url"
         label="路径"
-        width="450">
+        >
       </el-table-column>
 
       <el-table-column
         align="center"
         label="操作"
-        width="150">
+        >
         <template slot-scope="scope">
           <el-button size="small" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
           <el-button type="danger" size="small" @click="handleDel(scope.$index, scope.row)">删除</el-button>
@@ -38,13 +43,13 @@
     </el-table>
 
     <!--编辑界面-->
-    <el-dialog title="编辑" :visible.sync="editFormVisible" :close-on-click-modal="false">
+    <el-dialog title="编辑" :visible.sync="editFormVisible" :close-on-click-modal="false"  width="520px">
       <el-form :model="editForm" label-width="80px" :rules="editForm" ref="editForm">
-        <el-form-item label="名称" prop="name" style="width: 450px">
+        <el-form-item label="名称" prop="name">
           <el-input v-model="editForm.name" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="路径" prop="url" >
-          <el-select v-model="editForm.url"  @click.native="handleCommand" placeholder="请选电脑已连接的打印机" style="width: 370px;">
+          <el-select v-model="editForm.url"  @click.native="handleCommand" placeholder="请选电脑已连接的打印机" style="width: 100%;" >
             <el-option v-for="i in list" :key="i" :label="i" :value="i"></el-option>
           </el-select>
         </el-form-item>
@@ -56,13 +61,13 @@
     </el-dialog>
 
     <!--新增界面-->
-    <el-dialog title="新增" :visible.sync="addFormVisible" :close-on-click-modal="false" >
-      <el-form :model="addForm" label-width="80px"  ref="addForm">
-        <el-form-item label="名称" prop="name" style="width: 450px">
+    <el-dialog title="新增" :visible.sync="addFormVisible" :close-on-click-modal="false"  width="520px">
+      <el-form :model="addForm" label-width="60px"  ref="addForm">
+        <el-form-item label="名称" prop="name" >
           <el-input v-model="addForm.name" auto-complete="off"></el-input>
         </el-form-item>
         <el-form-item label="路径" prop="url" >
-          <el-select v-model="addForm.url" @click.native="handleCommand"  placeholder="请选电脑已连接的打印机" style="width: 370px;">
+          <el-select v-model="addForm.url" @click.native="handleCommand"  placeholder="请选电脑已连接的打印机" style="width: 100%;">
             <el-option v-for="i in list" :key="i" :label="i" :value="i"></el-option>
           </el-select>
         </el-form-item>
@@ -78,7 +83,7 @@
 
 <script>
 
-  import {getPrinterList,getUnusedPrinterList,savePrinter,deletePrinter} from '../../api/api'
+  import {getPrinterList,getUnusedPrinterList,savePrinter,deletePrinter,batchDeletePrinter} from '../../api/api'
 
   export default {
     data() {
@@ -98,7 +103,9 @@
           name: '',
           url:''
         },
-        list:[]
+        list:[],
+        multipleSelection:[],
+        batchDelDisable : true
       }
     },
     methods:{
@@ -192,6 +199,37 @@
       },
       handleCommand(command) {
         this.unusedPrinters();
+      },
+      handleSelectionChange(val) {
+        this.multipleSelection = val;
+        if (this.multipleSelection.length !== 0){
+          this.batchDelDisable = false
+        }
+      },
+      batchDel:function () {
+        this.$confirm('确认删除该记录吗?', '提示', {
+          type: 'warning'
+        }).then(() => {
+          let param = [];
+          for (let o of this.multipleSelection){
+            param.push(o.id)
+          }
+          batchDeletePrinter(param).then((res=>{
+            if(res.flag){
+              this.$message({
+                message: '删除成功',
+                type: 'success'
+              });
+            }else {
+              this.$message.error("删除失败");
+            }
+          }))
+          this.loadPrinters();
+        });
+
+      },
+      printerFormat:function (i) {
+        console.log(i);
       }
     },
     mounted() {
@@ -204,3 +242,13 @@
     }
   }
 </script>
+
+<style>
+  .el-dialog__body {
+    padding: 30px;
+  }
+  .el-dialog__footer {
+    padding: 10px 30px 20px 30px;
+  }
+
+</style>
