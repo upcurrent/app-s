@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-let base = 'http://localhost:8770/zebra';
+let base = 'http://192.168.1.9:8770/zebra';
 
 export const getPrinterList = params => { return axios.post(`${base}/print/getPrinterList`, params).then(res => res.data); };
 
@@ -9,8 +9,6 @@ export const getUnusedPrinterList = params => { return axios.post(`${base}/print
 export const savePrinter = params => { return axios.post(`${base}/print/savePrinter`, params).then(res => res.data); };
 
 export const deletePrinter = params => { return axios.post(`${base}/print/deletePrinter`, params).then(res => res.data); };
-
-export const batchDeletePrinter = params => {return axios.post(`${base}/print/batchDeletePrinter`,params).then(res => res.data)};
 
 export const getRecord = params => { return axios.post(`${base}/print/getRecord`, params).then(res => res.data); };
 
@@ -26,10 +24,7 @@ export const uploadUrl = base+"/print/upload";
 
 export const deleteReportTemplate = params => { return axios.post(`${base}/print/deleteReportTemplate`, params).then(res => res.data); };
 
-export const batchDeleteReportTemplate = params => { return axios.post(`${base}/print/batchDeleteReportTemplate`, params).then(res => res.data); };
-
 //updateReportTemplate
-
 
 export const newTemplate = base+"/print/newTemplate";
 
@@ -44,8 +39,6 @@ export const getUserList = params => { return axios.post(`${base}/user/list/`+pa
 export const getUserNode = params => { return axios.post(`${base}/user/node`, params).then(res => res.data); };
 
 export const saveUser = params => { return axios.post(`${base}/user/save`, params).then(res => res.data); };
-
-export const getDbType = params => { return axios.post(`${base}/appConfig/getDbType`,params).then(res => res.data) };
 
 
 

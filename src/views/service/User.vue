@@ -5,7 +5,7 @@
                 <el-tree :data="tree" :props="defaultProps" accordion @node-click="handleNodeClick" node-key="id" :highlight-current="true" style="margin-top: 40px"></el-tree>
             </el-aside>
             <el-main>
-                <el-table v-loading="loading" :data="records" border style="width: 100%" height="760">
+                <el-table :data="records" border style="width: 100%" height="760">
                     <el-table-column align="center" prop="userName" label="名称" >
                     </el-table-column>
 
@@ -67,8 +67,7 @@
                     password:"",
                     open:false
                 },
-                bookId:0,
-                loading:false
+                bookId:0
             }
         },
         methods:{
@@ -78,12 +77,9 @@
                 }))
             },
             loadUserList:function () {
-                this.loading = true;
                 getUserList(this.bookId).then((res=>{
                     this.records = res;
-                })).finally(()=>{
-                    this.loading = false;
-                })
+                }))
             },
             handleNodeClick:function (node) {
                 if (node.isLeaf){

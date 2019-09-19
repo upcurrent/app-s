@@ -201,20 +201,6 @@
                                 </el-form-item>
                             </el-col>
                         </el-form-item>
-                        <el-form-item label="数据库类型:">
-                            <el-col :span="20">
-                                <el-form-item  prop="dbType">
-                                    <el-select v-model="db_info_form.dbType" placeholder="请选择">
-                                        <el-option
-                                                v-for="item in optionsType"
-                                                :key="item.id"
-                                                :label="item.name"
-                                                :value="item.id">
-                                        </el-option>
-                                    </el-select>
-                                </el-form-item>
-                            </el-col>
-                        </el-form-item>
                     </el-form>
                     <div slot="footer" class="dialog-footer">
                         <el-button @click="db_dialog_visible = false">取 消</el-button>
@@ -240,9 +226,8 @@
 
 <script>
 
-
     import axios from 'axios';
-    import {url,getDbType} from '../../api/api'
+    import {url} from '../../api/api'
 
     export default{
         data(){
@@ -297,8 +282,7 @@
                     userName: "",
                     password: "",
                     dbName: "",
-                    type: "",
-                    dbType:""
+                    type: ""
                 },
                 form_rules: {
                     serverName: [
@@ -307,21 +291,13 @@
                 },
                 frash: false,
                 edit_app_id: 0,
-                edit_db_info_id: 0,
-                optionsType:[]
+                edit_db_info_id: 0
             }
         },
         mounted() {
-            this.localDbType();
             this.load_app_list();
         },
         methods: {
-            localDbType:function(){
-                getDbType(null).then((res)=>{
-                    console.log(res);
-                    this.optionsType = res;
-                })
-            },
             item_change(value){
                 this.form.projectId = this.options[value].projectId;
                 this.form.serverName = this.options[value].name;

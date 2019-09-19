@@ -1,7 +1,7 @@
 <template>
     <el-container id="ii">
         <el-aside width="200px">
-            <el-button type="primary"  plain style="margin-top: 40px">复制到...</el-button>
+            <el-button type="primary" plain style="margin-top: 40px">复制到...</el-button>
             <el-tree :data="userSelect" :props="defaultProps" accordion @node-click="handleNodeClick" node-key="id" :highlight-current="true" style="margin-top: 20px"></el-tree>
         </el-aside>
         <el-main>
@@ -46,7 +46,7 @@
                     <el-row>
                         <el-col>
                             <el-button type="primary" :style="{'float':'left'}">选择供应商</el-button>
-                            <el-button type="danger" plain :style="{'float':'left'}" >删除</el-button>
+                            <el-button type="danger" plain :style="{'float':'left'}">删除</el-button>
                         </el-col>
                     </el-row>
                     <el-table ref="multipleTable" :data="supplierData" :style="{'margin-top':'10px'}" border tooltip-effect="dark"  @selection-change="handleSelectionChange"  height="620">
@@ -72,7 +72,7 @@
                     <el-row>
                         <el-col>
                             <el-button type="primary" :style="{'float':'left'}">选择客户</el-button>
-                            <el-button type="danger" plain :style="{'float':'left'}" >删除</el-button>
+                            <el-button type="danger" plain :style="{'float':'left'}" :disabled="allow" >删除</el-button>
                         </el-col>
                     </el-row>
                     <el-table ref="multipleTable" :data="customerData" :style="{'margin-top':'10px'}" border tooltip-effect="dark"  @selection-change="handleSelectionChange"  height="620">
@@ -98,7 +98,7 @@
                     <el-row>
                         <el-col>
                             <el-button type="primary" :style="{'float':'left'}">选择商品</el-button>
-                            <el-button type="danger" plain :style="{'float':'left'}" >删除</el-button>
+                            <el-button type="danger" plain :style="{'float':'left'}" :disabled="allow" >删除</el-button>
                         </el-col>
                     </el-row>
                     <el-table ref="multipleTable" :data="customerData" :style="{'margin-top':'10px'}" border tooltip-effect="dark"  @selection-change="handleSelectionChange"  height="620">
@@ -121,10 +121,32 @@
                     >
                     </el-pagination>
                 </el-tab-pane>
+
+                <!--仓库-->
+                <el-tab-pane label="仓库">
+                    <el-tree
+                            :data="cangku"
+                            show-checkbox
+                            node-key="id"
+                            :default-expanded-keys="[2, 3]"
+                            :default-checked-keys="[5]"
+                            :props="defaultProps">
+                    </el-tree>
+                    <div style="margin-top: 20px">
+                        <el-button type="primary">保存</el-button>
+                        <el-button>重置</el-button>
+                    </div>
+                </el-tab-pane>
             </el-tabs>
+
         </el-main>
     </el-container>
+
+
+
+
 </template>
+
 <script>
     export default {
         data() {
@@ -202,24 +224,44 @@
                     memberPrice: false,
                     deliveryPrice: false,
                     customPrice: false
-                }
+                },
+                cangku: [{
+                    id: 1,
+                    label: '公司总部',
+                    children: [{
+                        id: 4,
+                        label: '公司总部零售仓库',
+                        children: [{
+                            id: 9,
+                            label: '仓库 1'
+                        }, {
+                            id: 10,
+                            label: '仓库 2'
+                        }]
+                    }]
+                }, {
+                    id: 2,
+                    label: '深圳分公司',
+                    children: [{
+                        id: 5,
+                        label: '深圳分公司总仓库'
+                    }, {
+                        id: 6,
+                        label: '深圳分公司福田区仓库'
+                    }]
+                }, {
+                    id: 3,
+                    label: '广州分公司',
+                    children: [{
+                        id: 7,
+                        label: '广州分公司总仓库'
+                    }, {
+                        id: 8,
+                        label: '广州分公司越秀区仓库'
+                    }]
+                }],
             }
-        },
-        methods:{
-            handleCurrentChange(){
-
-            },
-            handleNodeClick(){
-
-            },
-            handleSizeChange(){
-
-            },
-            handleSelectionChange(){
-
-            },
         }
-
     }
 </script>
 

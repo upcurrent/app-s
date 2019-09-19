@@ -43,15 +43,6 @@ let routes = [
     {
         path: '/',
         component: Home,
-        name: '权限分配',
-        iconCls: 'el-icon-setting',//图标样式class
-        children: [
-            { path: '/userRole',name : '用户权限',component:UserRole}
-        ]
-    },
-    {
-        path: '/',
-        component: Home,
         name: '系统设置',
         iconCls: 'el-icon-setting',//图标样式class
         children: [
@@ -66,3 +57,12 @@ export default new Router({
     routes
 })
 
+/**
+ * routes: [
+ {
+      path: '/',
+      name: 'HelloWorld',
+      component: HelloWorld
+    }
+ ]
+ */

@@ -5,7 +5,7 @@
       <el-form :inline="true" >
         <el-form-item>
           <el-button type="primary" @click="handleAdd">新增</el-button>
-          <el-button type="danger" @click="batchDel" :disabled="batchDelDisable" plain>删除</el-button>
+          <el-button type="danger" plain>删除</el-button>
         </el-form-item>
       </el-form>
     </el-col>
@@ -15,7 +15,6 @@
       border
       style="width: 100%"
       height="700"
-      @selection-change="handleSelectionChange"
     >
       <el-table-column type="selection" width="40"></el-table-column>
       <el-table-column
@@ -83,7 +82,7 @@
 
 <script>
 
-  import {getPrinterList,getUnusedPrinterList,savePrinter,deletePrinter,batchDeletePrinter} from '../../api/api'
+  import {getPrinterList,getUnusedPrinterList,savePrinter,deletePrinter} from '../../api/api'
 
   export default {
     data() {
@@ -103,9 +102,7 @@
           name: '',
           url:''
         },
-        list:[],
-        multipleSelection:[],
-        batchDelDisable : true
+        list:[]
       }
     },
     methods:{
@@ -199,37 +196,6 @@
       },
       handleCommand(command) {
         this.unusedPrinters();
-      },
-      handleSelectionChange(val) {
-        this.multipleSelection = val;
-        if (this.multipleSelection.length !== 0){
-          this.batchDelDisable = false
-        }
-      },
-      batchDel:function () {
-        this.$confirm('确认删除该记录吗?', '提示', {
-          type: 'warning'
-        }).then(() => {
-          let param = [];
-          for (let o of this.multipleSelection){
-            param.push(o.id)
-          }
-          batchDeletePrinter(param).then((res=>{
-            if(res.flag){
-              this.$message({
-                message: '删除成功',
-                type: 'success'
-              });
-            }else {
-              this.$message.error("删除失败");
-            }
-          }))
-          this.loadPrinters();
-        });
-
-      },
-      printerFormat:function (i) {
-        console.log(i);
       }
     },
     mounted() {
