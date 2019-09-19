@@ -163,7 +163,7 @@
     .header {
       height: 60px;
       line-height: 60px;
-      background: #20a0ff;
+      background: #3c9cff;
       color: #fff;
 
       .userinfo {
@@ -188,8 +188,8 @@
       .logo {
         //width:230px;
         height: 60px;
-        font-size: 22px;
-        padding-left: 20px;
+        font-size: 16px;
+        padding-left: 30px;
         padding-right: 20px;
         border-color: rgba(238, 241, 146, 0.3);
         border-right-width: 1px;

@@ -1,28 +1,67 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div id="App">
+    <transition name="fade"
+                mode="out-in">
+      <router-view></router-view>
+    </transition>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-
-export default {
-  name: 'app',
-  components: {
-    HelloWorld
+  export default {
+    name: 'App',
+    components: {
+    }
   }
-}
+
 </script>
 
-<style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
+<style lang="scss">
+  body {
+    margin: 0px;
+    padding: 0px;
+    /*background: url(assets/bg1.jpg) center !important;
+          background-size: cover;*/
+    // background: #1F2D3D;
+    font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, SimSun, sans-serif;
+    font-size: 14px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  #app {
+    position: absolute;
+    top: 0px;
+    bottom: 0px;
+    width: 100%;
+  }
+
+  .el-submenu [class^=fa] {
+    vertical-align: baseline;
+    margin-right: 10px;
+  }
+
+  .el-menu-item [class^=fa] {
+    vertical-align: baseline;
+    margin-right: 10px;
+  }
+
+  .toolbar {
+    background: #fff;
+    padding: 0;
+    //border:1px solid #dfe6ec;
+    margin: 30px 0 0 0;
+    .el-form-item {
+      margin-bottom: 10px;
+    }
+  }
+
+  .fade-enter-active,
+  .fade-leave-active {
+    transition: all .2s ease;
+  }
+
+  .fade-enter,
+  .fade-leave-active {
+    opacity: 0;
+  }
 </style>
