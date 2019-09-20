@@ -1,21 +1,20 @@
  <template>
   <div>
     <el-table :data="checked_list" border>
-      <el-table-column align="center" v-for="col in columns" :key="col.id">
-        <template slot="header" v-if="col.id == '1'">
-          <div>{{col.label}}</div>
-        </template>
-        <template  scope="scope" v-if="col.id == '1'">
-          <div>{{scope.model}}</div>
-        </template>
-        <template slot="header" v-if="col.id != '1'">
-          <div>
-            <el-checkbox @change="scope1 = col.label" :label="col.label"></el-checkbox>
+      <el-table-column align="center" v-for="(col,index) in columns" :key="col.id">
+        <template slot="header">
+          <div v-if="index == 0">{{col.label}}</div>
+          <div v-else>
+            <el-checkbox @change="scope1 = col.prop" :label="col.label"></el-checkbox>
           </div>
         </template>
-        <template slot-scope="scope" v-if="col.id != '1'">
-          <div>
-            <el-checkbox @change="scope1 = scope.row"></el-checkbox>
+        <template slot-scope="scope">
+          <div v-if="index == 0">{{scope.row.model}}</div>
+          <div v-else>
+            <el-checkbox
+              v-model="scope.row[`${col.prop}`]"
+              @change="scope1 = {row:scope,index:index}"
+            ></el-checkbox>
           </div>
         </template>
       </el-table-column>
@@ -23,9 +22,11 @@
   </div>
 </template>
  <script>
+import { getUserNode, getUserList } from "../../api/api";
 export default {
   data() {
     return {
+      bookId: 0,
       scope1: "",
       columns: [
         { checked: true, id: "1", label: "模块名称", prop: "model" },
@@ -94,14 +95,15 @@ export default {
           export: false
         }
       ],
-      mounted() {
-        /**
-         * el-checkbox__input is-indeterminate 半选
-         * el-checkbox__input is-checked       全选
-         */
-      },
-      methods: {}
+      xxxxf:{
+        throw:null,
+        current:null
+      }
     };
+  },
+  mounted() {
+   
   }
 };
 </script>
+

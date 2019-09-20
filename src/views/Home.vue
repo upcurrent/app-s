@@ -106,7 +106,6 @@
     },
     methods: {
       onSubmit() {
-        console.log('submit!');
       },
       handleopen() {
         //console.log('handleopen');
@@ -117,7 +116,7 @@
       handleclose1() {
         //console.log('handleclose');
       },
-      handleselect: function (a, b) {
+      handleselect: function () {
       },
       //退出登录
       logout: function () {
