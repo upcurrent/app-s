@@ -82,6 +82,7 @@
                 }))
             },
             handleNodeClick:function (node) {
+                console.log(node);
                 if (node.isLeaf){
                     this.bookId = node.id;
                     this.loadUserList();

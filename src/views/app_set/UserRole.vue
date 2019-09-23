@@ -2,16 +2,25 @@
   <el-container id="ii">
     <el-aside width="200px">
       <el-button type="primary" plain style="margin-top: 40px">复制到...</el-button>
-      <el-aside width="200px">
-        <el-tree
-          :data="tree"
-          :props="defaultProps"
-          accordion
-          @node-click="handleNodeClick"
-          node-key="id"
-          :highlight-current="true"
-          style="margin-top: 40px"
-        ></el-tree>
+      <el-aside width="200px" style="height:75vh">
+        <el-scrollbar
+          wrap-class="list"
+          wrap-style="color: gray;"
+          view-class="view-box"
+          :native="false"
+          style="height:100%;overflow-x:hidden;"
+        >
+          <el-tree
+            :data="tree"
+            :props="defaultProps"
+            accordion
+            @node-click="handleNodeClick"
+            :load="load_node"
+            lazy
+            node-key="id"
+            :highlight-current="true"
+          ></el-tree>
+        </el-scrollbar>
       </el-aside>
     </el-aside>
     <el-main>
@@ -156,7 +165,13 @@
   </el-container>
 </template>
 <script>
-import {getUserNode,getUserList} from '../../api/api'
+import {
+  getALLUserNode,
+  AppDBNode,
+  RoleUserNode,
+  getUserNode
+} from "../../api/api";
+import event from "@/event/event.js";
 import billRole from "@/components/userRole/billRole.vue";
 export default {
   data() {
@@ -165,7 +180,14 @@ export default {
       tree: [],
       defaultProps: {
         children: "children",
-        label: "name"
+        label: "name",
+        isLeaf:function(data, node){
+          if(node.level == 3){
+            return true;
+          }else{
+            return false;
+          }
+        }
       },
       records: [],
       editVisible: false,
@@ -267,22 +289,31 @@ export default {
     billRole: billRole
   },
   methods: {
-    handleNodeClick(node) {
-      console.info(node);
-      if (node.isLeaf) {
-        this.bookId = node.id;
-        this.loadUserList();
+    load_node(node, resolve) {
+      if (node.level == 1) {
+        if (!node.isLeaf && node.data.id) {
+          AppDBNode(node.data.id).then(res => {
+            resolve(res);
+          });
+        }
+      } else if (node.level == 2) {
+        if (!node.isLeaf && node.data.id) {
+          RoleUserNode(node.data.id).then(res => {
+            resolve(res);
+          });
+        }
       }
+      return resolve([]);
     },
     loadTree() {
-      getUserNode(null).then(res => {
+      getALLUserNode(null).then(res => {
         this.tree = res;
       });
     },
-    loadUserList() {
-      getUserList(this.bookId).then(res => {
-        this.records = res;
-      });
+    handleNodeClick(node) {
+      if (node.bookId) {
+        event.$emit("load_role", node);
+      }
     },
     handleCurrentChange() {},
     handleSizeChange() {},
@@ -304,5 +335,8 @@ export default {
 }
 #ii .el-form-item {
   margin-bottom: 15px;
+}
+.el-scrollbar .el-scrollbar__wrap {
+  overflow-x: hidden !important;
 }
 </style>
