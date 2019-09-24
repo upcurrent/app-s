@@ -262,13 +262,14 @@ export default {
     };
   },
   mounted() {
-    this.columns.forEach(col =>{
+    this.columns.forEach(col => {
       this.function_list.push(col.prop);
-    })
+    });
     event.$on("load_role", node => {
-      FunctionList(node.bookId).then(res => {
+      FunctionList(node).then(res => {
+        console.log(res);
         this.checked_list = res;
-        this.default_data_init()
+        this.default_data_init();
       });
     });
   },
@@ -360,22 +361,12 @@ export default {
       });
     },
     default_data_init() {
-      let Empty_index = [];
       this.checked_list.forEach((checked_box, index) => {
         Object.keys(checked_box).forEach(field => {
-          if (field != "name" && field.includes('_indeterminate') == false) {
+          if (field != "name" && field.includes("_indeterminate") == false) {
             checked_box[field + "_disable"] = false;
           }
         });
-        if (checked_box.infos.length == 0) {
-          Empty_index.push(index);
-        }
-        checked_box.infos.forEach(info => {
-          delete info.infos;
-        });
-      });
-      Empty_index.forEach(index => {
-        this.checked_list.splice(index, 1);
       });
     }
   }

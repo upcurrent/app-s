@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-let base = 'http://192.168.1.9:8770/zebra';
+let base = 'http://192.168.1.10:8770/zebra';
 
 export const getPrinterList = params => { return axios.post(`${base}/print/getPrinterList`, params).then(res => res.data); };
 
@@ -44,11 +44,10 @@ export const RoleUserNode = params => { return axios.post(`${base}/user/user_nod
 
 export const AppDBNode = params => { return axios.post(`${base}/user/db_node/`+params, null).then(res => res.data); };
 
-
-export const getALLUserNode = params => { return axios.post(`${base}/user/node_list`, params).then(res => res.data); };
+export const getALLUserNode = params => { return axios.post(`${base}/user/app_node`, params).then(res => res.data); };
 
 //##################################################
-export const FunctionList = params => { return axios.post(`${base}/role/function/`+params, null).then(res => res.data); };
+export const FunctionList = params => { return axios.post(`${base}/role/fall_map/`,params, null).then(res => res.data); };
 
 
 
