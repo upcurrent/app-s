@@ -23,7 +23,7 @@
                 <el-checkbox
                   v-model="info[function_list[index]]"
                   :disabled="props.row[function_list[index]+'_disable']"
-                  @change="info_checked(prop,props.row.infos,props.row,function_list[index])"
+                  @change="info_checked(function_list[index],props.row.infos,props.row,info[function_list[index]])"
                 ></el-checkbox>
               </div>
             </td>
@@ -262,11 +262,13 @@ export default {
     };
   },
   mounted() {
-    this.function_list = Object.keys(this.example);
+    this.columns.forEach(col =>{
+      this.function_list.push(col.prop);
+    })
     event.$on("load_role", node => {
       FunctionList(node.bookId).then(res => {
         this.checked_list = res;
-        this.default_data_init();
+        this.default_data_init()
       });
     });
   },
@@ -322,6 +324,7 @@ export default {
       }
     },
     info_checked(field, infos, row, value) {
+      console.log(field, row, value);
       let checked = 0;
       let not_checked = 0;
       infos.forEach(info => {
@@ -331,7 +334,6 @@ export default {
           not_checked++;
         }
       });
-      console.log(row);
       if (checked > 0 && not_checked > 0) {
         // 一部分选中
         row[field + "_indeterminate"] = true;
@@ -348,7 +350,6 @@ export default {
         row[field + "_indeterminate"] = false;
         row[field] = true;
       }
-      console.log({ ...arguments });
     },
     // 表头选择不确定
     columns_indeterminate(field, value) {
@@ -362,8 +363,7 @@ export default {
       let Empty_index = [];
       this.checked_list.forEach((checked_box, index) => {
         Object.keys(checked_box).forEach(field => {
-          if (field != "name") {
-            checked_box[field + "_indeterminate"] = false;
+          if (field != "name" && field.includes('_indeterminate') == false) {
             checked_box[field + "_disable"] = false;
           }
         });
