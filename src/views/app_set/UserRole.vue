@@ -171,7 +171,7 @@
 
 <script>
 import {
-  getALLUserNode, 
+  getALLUserNode,
   AppDBNode,
   RoleUserNode,
   getUserNode
@@ -186,10 +186,10 @@ export default {
       defaultProps: {
         children: "children",
         label: "name",
-        isLeaf:function(data, node){
-          if(node.level == 3){
+        isLeaf: function(data, node) {
+          if (node.level == 3) {
             return true;
-          }else{
+          } else {
             return false;
           }
         }
@@ -202,41 +202,7 @@ export default {
         open: false
       },
       bookId: 0,
-                      cangku: [{
-                    id: 1,
-                    label: '公司总部',
-                    children: [{
-                        id: 4,
-                        label: '公司总部零售仓库',
-                        children: [{
-                            id: 9,
-                            label: '仓库 1'
-                        }, {
-                            id: 10,
-                            label: '仓库 2'
-                        }]
-                    }]
-                }, {
-                    id: 2,
-                    label: '深圳分公司',
-                    children: [{
-                        id: 5,
-                        label: '深圳分公司总仓库'
-                    }, {
-                        id: 6,
-                        label: '深圳分公司福田区仓库'
-                    }]
-                }, {
-                    id: 3,
-                    label: '广州分公司',
-                    children: [{
-                        id: 7,
-                        label: '广州分公司总仓库'
-                    }, {
-                        id: 8,
-                        label: '广州分公司越秀区仓库'
-                    }]
-                }],
+
       userSelect: [
         {
           label: "账套 1",
@@ -256,15 +222,11 @@ export default {
               label: "用户 2-1"
             }
           ]
-        },
-        {
-          label: "账套 3",
-          children: [
-            {
-              label: "用户 3-1"
-            }
-          ]}]
-    }
+        }
+      ]
+    };
+  }
+};
 </script>
 
 <style>
