@@ -4,7 +4,7 @@
             <el-tree :data="interfaceSelect" :props="defaultProps" accordion @node-click="handleNodeClick" node-key="id" style="margin-top: 40px"></el-tree>
         </el-aside>
         <el-main>
-            <el-form :inline="true" v-model="formInlineIF" style="margin-top: 20px">
+            <el-form :inline="true" :model="formInlineIF" style="margin-top: 20px">
                 <el-form-item>
                     <el-select v-model="value" placeholder="请选择需要编辑的界面">
                         <el-option
@@ -21,6 +21,8 @@
                     <el-button>重置</el-button>
                 </el-form-item>
             </el-form>
+
+
             <el-table :data="interfaces" border style="width: 100%" height="680" >
                 <el-table-column type="selection" width="40" :selectable="handle_checkbox"></el-table-column>
                 <el-table-column align="center" prop="db" label="名称"></el-table-column>
@@ -116,8 +118,7 @@
                 }else{
                     return false;
                 }
-            },
-            handleNodeClick(){}
+            }
         }
     }
 </script>
