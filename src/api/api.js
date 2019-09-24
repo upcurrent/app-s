@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-let base = 'http://192.168.1.10:8770/zebra';
+let base = 'http://192.168.1.9:8770/zebra';
 
 export const getPrinterList = params => { return axios.post(`${base}/print/getPrinterList`, params).then(res => res.data); };
 

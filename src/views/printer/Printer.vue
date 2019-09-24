@@ -11,29 +11,29 @@
     </el-col>
 
     <el-table
-      :data="printers"
-      border
-      style="width: 100%"
-      height="700"
+            :data="printers"
+            border
+            style="width: 100%"
+            height="700"
     >
       <el-table-column type="selection" width="40"></el-table-column>
       <el-table-column
-        align="center"
-        prop="name"
-        label="名称"
-        >
+              align="center"
+              prop="name"
+              label="名称"
+      >
       </el-table-column>
       <el-table-column
-        align="center"
-        prop="url"
-        label="路径"
-        >
+              align="center"
+              prop="url"
+              label="路径"
+      >
       </el-table-column>
 
       <el-table-column
-        align="center"
-        label="操作"
-        >
+              align="center"
+              label="操作"
+      >
         <template slot-scope="scope">
           <el-button size="small" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
           <el-button type="danger" size="small" @click="handleDel(scope.$index, scope.row)">删除</el-button>
@@ -81,9 +81,7 @@
 </template>
 
 <script>
-
   import {getPrinterList,getUnusedPrinterList,savePrinter,deletePrinter} from '../../api/api'
-
   export default {
     data() {
       return {
@@ -108,14 +106,13 @@
     methods:{
       loadPrinters(){
         getPrinterList(null).then((res)=>{
-            this.printers = res;
+          this.printers = res;
         })
       },
       handleEdit: function (index, row) {
         this.editFormVisible = true;
         this.editForm = Object.assign({}, row);
       },
-
       handleDel:function (index, row) {
         this.$confirm('确认删除该记录吗?', '提示', {
           type: 'warning'
@@ -133,11 +130,9 @@
             }else {
               this.$message.error("删除失败");
             }
-
             this.loadPrinters();
           })
         }).catch(() => {
-
         });
       },
       //显示新增界面
@@ -187,7 +182,7 @@
             });
           }else {
             this.$message.error("修改" +
-              "失败");
+                    "失败");
           }
           this.$refs['editForm'].resetFields();
           this.editFormVisible = false;
@@ -202,9 +197,9 @@
       this.loadPrinters();
     },
     watch:{
-        printers:function (val) {
-            console.log(val);
-        }
+      printers:function (val) {
+        console.log(val);
+      }
     }
   }
 </script>
@@ -216,5 +211,4 @@
   .el-dialog__footer {
     padding: 10px 30px 20px 30px;
   }
-
 </style>
