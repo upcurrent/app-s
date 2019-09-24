@@ -6,7 +6,7 @@ import router from './router'
 
 import axios from 'axios'
 import VueAxios from 'vue-axios'
-
+import Clone from 'clone'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 
@@ -15,18 +15,13 @@ Vue.use(VueAxios,axios);
 
 Vue.config.productionTip = false;
 
-
-
 /* eslint-disable no-new */
 new Vue({
   router,
   render:(h)=>h(App)
 }).$mount("#app");
 
-
-
-
-
+Vue.prototype.clone = Clone;
 
 Date.prototype.Format = function(fmt)
 { //author: meizz
