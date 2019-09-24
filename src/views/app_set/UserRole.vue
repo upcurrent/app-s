@@ -176,7 +176,7 @@ import {
   RoleUserNode,
   getUserNode
 } from "../../api/api";
-import event from "@/event/event.js";
+import event from "../../event/evnet.js";
 import billRole from "@/components/userRole/billRole.vue";
 export default {
   data() {

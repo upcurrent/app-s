@@ -60,7 +60,7 @@
 </template>
  <script>
 import { getUserNode, FunctionList } from "../../api/api";
-import event from "@/event/event.js";
+import event from "../../event/evnet.js";
 export default {
   data() {
     return {
