@@ -21,9 +21,9 @@
               <div class="cell" v-if="index == 0">{{info.name}}</div>
               <div class="cell" v-else>
                 <el-checkbox
-                  v-model="info[prop]"
-                  :disabled="props.row[prop+'_disable']"
-                  @change="info_checked(prop,props.row.infos,props.row,info[prop])"
+                  v-model="info[function_list[index]]"
+                  :disabled="props.row[function_list[index]+'_disable']"
+                  @change="info_checked(prop,props.row.infos,props.row,function_list[index])"
                 ></el-checkbox>
               </div>
             </td>
@@ -87,7 +87,7 @@ export default {
           checked: false,
           indeterminate: false,
           label: "删除",
-          prop: "delete"
+          prop: "del"
         },
         {
           checked: false,
@@ -117,13 +117,13 @@ export default {
           checked: false,
           indeterminate: false,
           label: "作废",
-          prop: "throw"
+          prop: "cancellation"
         },
         {
           checked: false,
           indeterminate: false,
           label: "反作废",
-          prop: "rethrow"
+          prop: "reusing"
         },
         {
           checked: false,
@@ -132,70 +132,84 @@ export default {
           prop: "export"
         }
       ],
+      example: {
+        name: "",
+        insert: false,
+        edit: false,
+        del: false,
+        view: false,
+        print: false,
+        audit: false,
+        reaudit: false,
+        cancellation: false,
+        reusing: false,
+        export: false,
+        infos: []
+      },
       checked_list: [
         {
           name: "1",
           insert: false,
           edit: false,
-          delete: false,
+          del: false,
           view: false,
           print: false,
           audit: false,
           reaudit: false,
-          throw: false,
-          rethrow: false,
+          cancellation: false,
+          reusing: false,
           export: false,
           infos: [
             {
               name: "info1",
               insert: false,
               edit: false,
-              delete: false,
+              del: false,
               view: false,
               print: false,
               audit: false,
               reaudit: false,
-              throw: false,
-              rethrow: false,
+              cancellation: false,
+              reusing: false,
               export: false
             },
             {
               name: "info2",
               insert: false,
               edit: false,
-              delete: false,
+              del: false,
               view: false,
               print: false,
               audit: false,
               reaudit: false,
-              throw: false,
-              rethrow: false,
+              cancellation: false,
+              reusing: false,
               export: false
             },
             {
               name: "info3",
               insert: false,
               edit: false,
-              delete: false,
+              del: false,
               view: false,
               print: false,
               audit: false,
               reaudit: false,
-              throw: false,
-              rethrow: false,
+              cancellation: false,
+              reusing: false,
               export: false
             },
             {
               name: "info4",
               insert: false,
               edit: false,
-              delete: false,
+              del: false,
               view: false,
               print: false,
               audit: false,
               reaudit: false,
-              throw: false,
-              rethrow: false,
+              cancellation: false,
+              reusing: false,
               export: false
             }
           ]
@@ -204,13 +218,13 @@ export default {
           name: "2",
           insert: false,
           edit: false,
-          delete: false,
+          del: false,
           view: false,
           print: false,
           audit: false,
           reaudit: false,
-          throw: false,
-          rethrow: false,
+          cancellation: false,
+          reusing: false,
           export: false,
           infos: []
         },
@@ -218,13 +232,13 @@ export default {
           name: "3",
           insert: false,
           edit: false,
-          delete: false,
+          del: false,
           view: false,
           print: false,
           audit: false,
           reaudit: false,
-          throw: false,
-          rethrow: false,
+          cancellation: false,
+          reusing: false,
           export: false,
           infos: []
         },
@@ -232,13 +246,13 @@ export default {
           name: "4",
           insert: false,
           edit: false,
-          delete: false,
+          del: false,
           view: false,
           print: false,
           audit: false,
           reaudit: false,
-          throw: false,
-          rethrow: false,
+          cancellation: false,
+          reusing: false,
           export: false,
           infos: []
         }
@@ -248,18 +262,11 @@ export default {
     };
   },
   mounted() {
+    this.function_list = Object.keys(this.example);
     event.$on("load_role", node => {
       FunctionList(node.bookId).then(res => {
         this.checked_list = res;
         this.default_data_init();
-      });
-    });
-    this.checked_list.forEach(checked_box => {
-      Object.keys(checked_box).forEach(field => {
-        if (field != "name") {
-          checked_box[field + "_indeterminate"] = false;
-          checked_box[field + "_disable"] = false;
-        }
       });
     });
   },
@@ -352,24 +359,23 @@ export default {
       });
     },
     default_data_init() {
-      let obj = {
-        insert: false,
-        edit: false,
-        delete: false,
-        view: false,
-        print: false,
-        audit: false,
-        reaudit: false,
-        throw: false,
-        rethrow: false,
-        export: false
-      };
-      console.log(this.checked_list)
-      this.checked_list.forEach(func => {
-        func = Object.assign({name:func.name,infos:func.infos},this.clone(obj));
-        func.infos.forEach(info =>{
-          info = Object.assign({name:info.name},this.clone(obj));
-        })
+      let Empty_index = [];
+      this.checked_list.forEach((checked_box, index) => {
+        Object.keys(checked_box).forEach(field => {
+          if (field != "name") {
+            checked_box[field + "_indeterminate"] = false;
+            checked_box[field + "_disable"] = false;
+          }
+        });
+        if (checked_box.infos.length == 0) {
+          Empty_index.push(index);
+        }
+        checked_box.infos.forEach(info => {
+          delete info.infos;
+        });
+      });
+      Empty_index.forEach(index => {
+        this.checked_list.splice(index, 1);
       });
     }
   }
