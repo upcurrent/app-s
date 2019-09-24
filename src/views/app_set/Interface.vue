@@ -27,12 +27,33 @@
 <!--                <el-table-column type="selection" width="40" :selectable="handle_checkbox"></el-table-column>-->
                 <el-table-column align="center" prop="db" label="原名称"></el-table-column>
                 <el-table-column align="center" prop="dbShow" label="显示名称">
-                    <i class="el-icon-edit"></i>
+                    <template slot-scope="scope">
+                        <span style="margin-right: 10px">{{ scope.row.dbShow }}</span>
+                        <i class="el-icon-edit"></i>
+                    </template>
                 </el-table-column>
-                <el-table-column align="center" label="需要显示">
 
+                <el-table-column align="center"  v-for="(col,index) in NeedShow" :key="index">
+                    <template slot="header" slot-scope="scope">
+                        <div>
+                            <el-checkbox
+                                    @change="checked_header(col.prop,col.checked,scope)"
+                                    v-model="col.checked"
+                                    :indeterminate="col.indeterminate"
+                                    :label="col.label"
+                            ></el-checkbox>
+                        </div>
+                    </template>
+                    <template slot-scope="scope" >
+                        <div>
+                            <el-checkbox
+                                    v-model="scope.row[`${col.prop}`]"
+                                    @change="centext_checked(col.prop,scope.row[`${col.prop}`],scope.row.infos,scope.row)"
+                            ></el-checkbox>
+                        </div>
+                    </template>
                 </el-table-column>
-                <el-table-column align="center" label="默认不清空"></el-table-column>
+
                 <el-table-column align="center" label="排序">
                     <template>
                         <el-button type="primary" plain icon="el-icon-upload2" circle></el-button>
@@ -111,29 +132,50 @@
 
                 interfaces: [{
                     db: '单号',
-                    dbShow: '单据编码'
+                    dbShow: '单据编码',
+                    show:false,
+                    clear:false,
                 },{
-                    db: '单据日期',
-                    dbShow: '单据日期'
+                    db: '单号',
+                    dbShow: '单据编码',
+                    show:false,
+                    clear:false,
                 },{
-                    db: '供应商',
-                    dbShow: '供应商'
+                    db: '单号',
+                    dbShow: '单据编码',
+                    show:false,
+                    clear:false,
                 },{
-                    db: '仓库',
-                    dbShow: '仓库'
+                    db: '单号',
+                    dbShow: '单据编码',
+                    show:false,
+                    clear:false,
                 },{
-                    db: '经销方式',
-                    dbShow: '经销方式'
+                    db: '单号',
+                    dbShow: '单据编码',
+                    show:false,
+                    clear:false,
                 },{
-                    db: '业务员',
-                    dbShow: '业务员'
-                },{
-                    db: '备注',
-                    dbShow: '备注'
-                },{
-                    db: '制单人',
-                    dbShow: '制单人'
-                },]
+                    db: '单号',
+                    dbShow: '单据编码',
+                    show:false,
+                    clear:false,
+                },
+                ],
+                NeedShow: [
+                    {
+                        checked: false,
+                        indeterminate: false,
+                        label: "需要显示",
+                        prop: "show"
+                    },
+                    {
+                        checked: false,
+                        indeterminate: false,
+                        label: "默认不清空",
+                        prop: "clear"
+                    }
+                ]
             }
         },
         methods:{
@@ -143,7 +185,12 @@
                 }else{
                     return false;
                 }
-            }
+            },
+            checked_header(field, checked, scope) {
+                this.interfaces.forEach(i =>{
+                   i[field] = checked;
+                })
+            },
         }
     }
 </script>

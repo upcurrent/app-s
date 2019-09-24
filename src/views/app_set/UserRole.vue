@@ -160,6 +160,25 @@
             layout="total, sizes, prev, pager, next, jumper"
           ></el-pagination>
         </el-tab-pane>
+
+          <!--仓库-->
+          <el-tab-pane label="仓库">
+              <el-tree
+                      :data="cangku"
+                      show-checkbox
+                      node-key="id"
+                      default-expand-all
+                      @node-click="node_click"
+                      highlight-current
+                      :expand-on-click-node="false"
+                      :props="defaultProp">
+              </el-tree>
+              <el-footer style="margin: 20px 0 0 10px">
+                  <el-button type="primary">保存</el-button>
+                  <el-button>重置</el-button>
+              </el-footer>
+
+          </el-tab-pane>
       </el-tabs>
     </el-main>
   </el-container>
@@ -281,6 +300,57 @@ export default {
         memberPrice: false,
         deliveryPrice: false,
         customPrice: false
+      },
+      cangku:[{
+          id: 1,
+          label: '公司总部',
+          checked:false,
+          children: [{
+              id: 4,
+              label:'公司总部零售仓库',
+              checked:false,
+              children: [{
+                  id: 9,
+                  label: '仓库 1',
+                  checked:false,
+              },{
+                  id: 10,
+                  label: '仓库 2',
+                  checked:false,
+              }]
+          }]
+      },{
+          id: 2,
+          label: '深圳分公司',
+          checked:false,
+          children: [{
+              id: 5,
+              label: '深圳分公司总仓库',
+              checked:false
+          },{
+              id: 6,
+              label: '深圳分公司福田区仓库',
+              checked:false
+
+          }]
+      },{
+          id: 3,
+          label: '广州分公司',
+          checked:false,
+          children: [{
+              id: 7,
+              label: '广州分公司总仓库',
+              checked:false
+          },{
+              id: 8,
+              checked:false,
+
+              label: '广州分公司越秀区仓库'
+          }]
+      }],
+      defaultProp: {
+          children: 'children',
+          label: 'label'
       }
     };
   },
@@ -288,6 +358,10 @@ export default {
     billRole: billRole
   },
   methods: {
+    node_click(node){
+          console.log(node);
+          node.checked = !node.checked;
+      },
     load_node(node, resolve) {
       if (node.level == 1) {
         if (!node.isLeaf && node.data.id) {
