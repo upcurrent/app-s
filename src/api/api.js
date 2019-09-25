@@ -51,6 +51,8 @@ export const FunctionList = params => { return axios.post(`${base}/role/fall_map
 
 export const ColumnsList = params => { return axios.post(`${base}/role/columns/`+params).then(res => res.data); };
 
+export const BillGroup = params => { return axios.post(`${base}/role/infos`,params).then(res => res.data); };
+
 
 
 

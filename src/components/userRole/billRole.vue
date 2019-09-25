@@ -1,6 +1,6 @@
  <template>
   <div id="table_extend" style="width:100%">
-    <el-table :data="checked_list" border>
+    <el-table :data="checked_list" border height="60vh">
       <!-- 展开行 -->
       <el-table-column type="expand" width="50px">
         <template slot-scope="props">
@@ -23,7 +23,7 @@
                 <el-checkbox
                   v-model="info[function_list[index]]"
                   :disabled="props.row[function_list[index]+'_disable']"
-                  @change="info_checked(function_list[index],props.row.infos,props.row)"
+                  @change="info_checked(function_list[index],props.row.infos,props.row,info[function_list[index]],info.name)"
                 ></el-checkbox>
               </div>
             </td>
@@ -56,10 +56,15 @@
         </template>
       </el-table-column>
     </el-table>
+    <template>
+      <div>
+        <el-button type="primary" @click="save_data">保存</el-button>
+      </div>
+    </template>
   </div>
 </template>
  <script>
-import {FunctionList, ColumnsList } from "../../api/api";
+import { FunctionList, ColumnsList, BillGroup } from "../../api/api";
 import event from "../../event/evnet.js";
 export default {
   data() {
@@ -81,7 +86,12 @@ export default {
       },
       checked_list: [],
       bookId: 0,
-      function_list: []
+      function_list: [],
+      bill_group: [],
+      data: [],
+      user_id: 0,
+      fun_info_map: new Map(),
+      fun_group_map: new Map()
     };
   },
   mounted() {
@@ -92,18 +102,43 @@ export default {
       });
     });
     event.$on("load_role", node => {
-      this.columns.forEach(col=>{
+      this.fun_info_map = new Map();
+      this.data = [];
+      this.user_id = node.userId;
+      this.columns.forEach(col => {
         col.indeterminate = false;
-      })
+      });
       FunctionList(node).then(res => {
         this.checked_list = res;
         this.default_data_init();
       });
+      BillGroup(node).then(res => {
+        this.bill_group = res;
+        this.bill_group.forEach(bill => {
+          let arr = [];
+          bill.funInfos.forEach(info => {
+            this.fun_info_map.set(info.name, {
+              fun_id: info.funId,
+              user_id: this.user_id
+            });
+            this.data.push(this.fun_info_map.get(info.name));
+            arr.push(info.name);
+          });
+          this.fun_group_map.set(bill.name, arr);
+        });
+      });
     });
   },
   methods: {
+    save_data() {
+      console.log(this.data);
+    },
     // 头部选中
     checked_header(field, checked, scope) {
+      this.fun_info_map.forEach((value, key) => {
+        let obj = this.fun_info_map.get(key);
+        obj[field] = checked;
+      });
       this.checked_list.forEach(checked_box => {
         checked_box[field] = checked;
         if (checked) {
@@ -148,11 +183,21 @@ export default {
       infos.forEach(info => {
         info[field] = value;
       });
+      let names = this.fun_group_map.get(row.name);
+      names.forEach(name => {
+        let result = this.fun_info_map.get(name);
+        this.function_list.forEach(prop => {
+          result[prop] = value;
+        });
+      });
       if (row != null) {
         row[field + "_indeterminate"] = false;
       }
     },
-    info_checked(field, infos, row) {
+    // 单点
+    info_checked(field, infos, row, value, name) {
+      let result = this.fun_info_map.get(name);
+      result[field] = value;
       let checked = 0;
       let not_checked = 0;
       infos.forEach(info => {
