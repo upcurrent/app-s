@@ -49,6 +49,8 @@ export const getALLUserNode = params => { return axios.post(`${base}/user/app_no
 //##################################################
 export const FunctionList = params => { return axios.post(`${base}/role/fall_map/`,params, null).then(res => res.data); };
 
+export const ColumnsList = params => { return axios.post(`${base}/role/columns/`+params).then(res => res.data); };
+
 
 
 

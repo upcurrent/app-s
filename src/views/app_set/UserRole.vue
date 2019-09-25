@@ -359,7 +359,6 @@ export default {
   },
   methods: {
     node_click(node){
-          console.log(node);
           node.checked = !node.checked;
       },
     load_node(node, resolve) {

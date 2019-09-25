@@ -23,7 +23,7 @@
                 <el-checkbox
                   v-model="info[function_list[index]]"
                   :disabled="props.row[function_list[index]+'_disable']"
-                  @change="info_checked(function_list[index],props.row.infos,props.row,info[function_list[index]])"
+                  @change="info_checked(function_list[index],props.row.infos,props.row)"
                 ></el-checkbox>
               </div>
             </td>
@@ -33,13 +33,13 @@
       <!-- 其他行 -->
       <el-table-column align="center" width="119px" v-for="(col,index) in columns" :key="index">
         <template slot="header" slot-scope="scope">
-          <div v-if="index == 0">{{col.label}}</div>
+          <div v-if="index == 0">{{col.name}}</div>
           <div v-else>
             <el-checkbox
               @change="checked_header(col.prop,col.checked,scope)"
               v-model="col.checked"
               :indeterminate="col.indeterminate"
-              :label="col.label"
+              :label="col.name"
             ></el-checkbox>
           </div>
         </template>
@@ -59,79 +59,12 @@
   </div>
 </template>
  <script>
-import { getUserNode, FunctionList } from "../../api/api";
+import {FunctionList, ColumnsList } from "../../api/api";
 import event from "../../event/evnet.js";
 export default {
   data() {
     return {
-      columns: [
-        {
-          checked: false,
-          indeterminate: false,
-          label: "模块名称",
-          prop: "name"
-        },
-        {
-          checked: false,
-          indeterminate: false,
-          label: "新增",
-          prop: "insert"
-        },
-        {
-          checked: false,
-          indeterminate: false,
-          label: "编辑",
-          prop: "edit"
-        },
-        {
-          checked: false,
-          indeterminate: false,
-          label: "删除",
-          prop: "del"
-        },
-        {
-          checked: false,
-          indeterminate: false,
-          label: "查看",
-          prop: "view"
-        },
-        {
-          checked: false,
-          indeterminate: false,
-          label: "打印",
-          prop: "print"
-        },
-        {
-          checked: false,
-          indeterminate: false,
-          label: "审核",
-          prop: "audit"
-        },
-        {
-          checked: false,
-          indeterminate: false,
-          label: "反审核",
-          prop: "reaudit"
-        },
-        {
-          checked: false,
-          indeterminate: false,
-          label: "作废",
-          prop: "cancellation"
-        },
-        {
-          checked: false,
-          indeterminate: false,
-          label: "反作废",
-          prop: "reusing"
-        },
-        {
-          checked: false,
-          indeterminate: false,
-          label: "导出",
-          prop: "export"
-        }
-      ],
+      columns: [],
       example: {
         name: "",
         insert: false,
@@ -146,128 +79,23 @@ export default {
         export: false,
         infos: []
       },
-      checked_list: [
-        {
-          name: "1",
-          insert: false,
-          edit: false,
-          del: false,
-          view: false,
-          print: false,
-          audit: false,
-          reaudit: false,
-          cancellation: false,
-          reusing: false,
-          export: false,
-          infos: [
-            {
-              name: "info1",
-              insert: false,
-              edit: false,
-              del: false,
-              view: false,
-              print: false,
-              audit: false,
-              reaudit: false,
-              cancellation: false,
-              reusing: false,
-              export: false
-            },
-            {
-              name: "info2",
-              insert: false,
-              edit: false,
-              del: false,
-              view: false,
-              print: false,
-              audit: false,
-              reaudit: false,
-              cancellation: false,
-              reusing: false,
-              export: false
-            },
-            {
-              name: "info3",
-              insert: false,
-              edit: false,
-              del: false,
-              view: false,
-              print: false,
-              audit: false,
-              reaudit: false,
-              cancellation: false,
-              reusing: false,
-              export: false
-            },
-            {
-              name: "info4",
-              insert: false,
-              edit: false,
-              del: false,
-              view: false,
-              print: false,
-              audit: false,
-              reaudit: false,
-              cancellation: false,
-              reusing: false,
-              export: false
-            }
-          ]
-        },
-        {
-          name: "2",
-          insert: false,
-          edit: false,
-          del: false,
-          view: false,
-          print: false,
-          audit: false,
-          reaudit: false,
-          cancellation: false,
-          reusing: false,
-          export: false,
-          infos: []
-        },
-        {
-          name: "3",
-          insert: false,
-          edit: false,
-          del: false,
-          view: false,
-          print: false,
-          audit: false,
-          reaudit: false,
-          cancellation: false,
-          reusing: false,
-          export: false,
-          infos: []
-        },
-        {
-          name: "4",
-          insert: false,
-          edit: false,
-          del: false,
-          view: false,
-          print: false,
-          audit: false,
-          reaudit: false,
-          cancellation: false,
-          reusing: false,
-          export: false,
-          infos: []
-        }
-      ],
+      checked_list: [],
       bookId: 0,
       function_list: []
     };
   },
   mounted() {
-    this.columns.forEach(col => {
-      this.function_list.push(col.prop);
+    ColumnsList(1).then(res => {
+      this.columns = res;
+      this.columns.forEach(col => {
+        this.function_list.push(col.prop);
+      });
     });
     event.$on("load_role", node => {
+      this.columns.forEach(col=>{
+        col.indeterminate = false;
+      })
       FunctionList(node).then(res => {
-        console.log(res);
         this.checked_list = res;
         this.default_data_init();
       });
@@ -295,7 +123,7 @@ export default {
         if (col.prop == field) {
           let checked = 0;
           let not_checked = 0;
-          this.checked_list.forEach((checked_box, indez) => {
+          this.checked_list.forEach(checked_box => {
             if (checked_box[field]) {
               checked++;
             } else {
@@ -324,8 +152,7 @@ export default {
         row[field + "_indeterminate"] = false;
       }
     },
-    info_checked(field, infos, row, value) {
-      console.log(field, row, value);
+    info_checked(field, infos, row) {
       let checked = 0;
       let not_checked = 0;
       infos.forEach(info => {
@@ -360,14 +187,76 @@ export default {
         }
       });
     },
+    //表头选中
+    columns_checked(field) {
+      this.columns.forEach(col => {
+        if (col.prop == field) {
+          col.checked = true;
+        }
+      });
+    },
+    //表头不选中
+    columns_not_checked(field) {
+      this.columns.forEach(col => {
+        if (col.prop == field) {
+          col.checked = false;
+        }
+      });
+    },
     default_data_init() {
-      this.checked_list.forEach((checked_box, index) => {
-        Object.keys(checked_box).forEach(field => {
-          if (field != "name" && field.includes("_indeterminate") == false) {
-            checked_box[field + "_disable"] = false;
+      let map = new Map();
+      if (this.checked_list.length != 0) {
+        Object.keys(this.checked_list[0]).forEach(key => {
+          if (
+            key != "name" &&
+            key.includes("_indeterminate") == false &&
+            key.includes("_disable") == false &&
+            key != "infos"
+          ) {
+            map.set(key, 0);
           }
         });
-      });
+        this.checked_list.forEach(checkbox_row => {
+          Object.keys(checkbox_row).forEach(key => {
+            if (
+              key != "name" &&
+              key.includes("_indeterminate") == false &&
+              key.includes("_disable") == false &&
+              key != "infos"
+            ) {
+              // checkbox_row[key + "_disable"] = false;
+              let check = 0;
+              checkbox_row["infos"].forEach(info => {
+                Object.keys(info).forEach(feild => {
+                  if (feild == key && info[key]) check++;
+                });
+              });
+              if (check == checkbox_row["infos"].length) {
+                checkbox_row[key + "_indeterminate"] = false;
+                checkbox_row[key] = true;
+              } else if (check == 0) {
+                checkbox_row[key + "_indeterminate"] = false;
+                checkbox_row[key] = false;
+              } else {
+                checkbox_row[key + "_indeterminate"] = true;
+                checkbox_row[key] = false;
+              }
+              if (checkbox_row[key]) {
+                map.set(key, map.get(key) + 1);
+              }
+            }
+          });
+        });
+        map.forEach((value, key) => {
+          if (value == this.checked_list.length) {
+            this.columns_checked(key);
+          } else if (value == 0) {
+            this.columns_not_checked(key);
+          } else {
+            this.columns_indeterminate(key, true);
+          }
+        });
+      }
     }
   }
 };
