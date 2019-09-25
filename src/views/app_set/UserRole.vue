@@ -1,7 +1,26 @@
 <template>
   <el-container id="ii">
     <el-aside width="200px">
-      <el-button type="primary" plain style="margin-top: 40px">复制到...</el-button>
+      <el-button type="primary" plain style="margin: 30px 0 10px 0" @click="copyTableVisible = true">复制到...</el-button>
+      <!--复制到...-->
+      <el-dialog title="复制到用户" :visible.sync="copyTableVisible">
+        <el-tree
+                :data="tree"
+                :props="defaultProps"
+                accordion
+                default-expand-all
+                show-checkbox
+                @node-click="handleNodeClick"
+                :load="load_node"
+                lazy
+                node-key="id"
+                :highlight-current="true"
+        ></el-tree>
+        <el-footer style="text-align:right;padding-bottom: 0;height: 40px;">
+          <el-button @click="dialogVisible = false">取 消</el-button>
+          <el-button type="primary" @click="dialogVisible = false" style="margin-left: 20px">确 定</el-button>
+        </el-footer>
+      </el-dialog>
       <el-aside width="200px" style="height:75vh">
         <el-scrollbar
           wrap-class="list"
@@ -23,6 +42,7 @@
         </el-scrollbar>
       </el-aside>
     </el-aside>
+
     <el-main>
       <el-tabs :tab-position="tabPosition" style="height: 100%; width: 98%">
         <!--单据功能-->
@@ -92,14 +112,14 @@
           ></el-pagination>
         </el-tab-pane>
           <!--选择供应商-->
-          <el-dialog title="选择供应商" :visible.sync="supplierTableVisible" style="height: 90%">
+          <el-dialog title="选择供应商" :visible.sync="supplierTableVisible">
             <el-container>
               <el-aside :style="{'width':'200px'}">
                 <el-tree :data="SupplierClassify" :props="defaultProp" default-expand-all @node-click="handleNodeClick"></el-tree>
               </el-aside>
               <el-container>
                 <el-main :style="{'padding-top':'0px'}">
-                  <el-table :data="gridData" border>
+                  <el-table :data="supData" border>
                     <el-table-column type="selection" width="42"></el-table-column>
                     <el-table-column property="date" label="供应商编码"></el-table-column>
                     <el-table-column property="name" label="供应商名称"></el-table-column>
@@ -148,7 +168,7 @@
           ></el-pagination>
         </el-tab-pane>
         <!--选择客户-->
-        <el-dialog title="选择客户" :visible.sync="customerTableVisible" style="height: 90%">
+        <el-dialog title="选择客户" :visible.sync="customerTableVisible">
           <el-container>
             <el-aside :style="{'width':'200px'}">
               <el-tree :data="CustomerClassify" :props="defaultProp" default-expand-all @node-click="handleNodeClick"></el-tree>
@@ -207,7 +227,7 @@
           ></el-pagination>
         </el-tab-pane>
         <!--选择商品-->
-        <el-dialog title="选择商品" :visible.sync="goodsTableVisible" style="height: 90%">
+        <el-dialog title="选择商品" :visible.sync="goodsTableVisible">
           <el-container>
             <el-aside :style="{'width':'200px'}">
               <el-tree :data="GoodsClassify" :props="defaultProp" default-expand-all @node-click="handleNodeClick"></el-tree>
@@ -230,24 +250,22 @@
           </el-container>
         </el-dialog>
 
-          <!--仓库-->
-          <el-tab-pane label="仓库">
-              <el-tree
-                      :data="cangku"
-                      show-checkbox
-                      node-key="id"
-                      default-expand-all
-                      @node-click="node_click"
-                      highlight-current
-                      :expand-on-click-node="false"
-                      :props="defaultProp">
-              </el-tree>
-              <el-footer style="margin: 20px 0 0 10px">
-                  <el-button type="primary">保存</el-button>
-                  <el-button>重置</el-button>
-              </el-footer>
-
-          </el-tab-pane>
+        <!--仓库-->
+        <el-tab-pane label="仓库">
+            <el-tree
+                    :data="cangku"
+                    show-checkbox
+                    node-key="id"
+                    default-expand-all
+                    @node-click="node_click"
+                    :expand-on-click-node="false"
+                    :props="defaultProp">
+            </el-tree>
+            <el-footer style="margin: 20px 0 0 10px">
+                <el-button type="primary">保存</el-button>
+                <el-button>重置</el-button>
+            </el-footer>
+        </el-tab-pane>
       </el-tabs>
     </el-main>
   </el-container>
@@ -263,6 +281,7 @@ import billRole from "@/components/userRole/billRole.vue";
 export default {
   data() {
     return {
+      copyTableVisible: false,
       tabPosition: "top",
       tree: [],
       defaultProps: {
@@ -423,7 +442,7 @@ export default {
           label: 'label'
       },
       dialogVisible: false,
-      gridData: [{
+      supData: [{
             date: '2016-05-02',
             name: '王小虎',
             num: '13800000000'
