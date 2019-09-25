@@ -63,7 +63,7 @@
         <el-tab-pane label="供应商">
           <el-row>
             <el-col>
-              <el-button type="primary" :style="{'float':'left'}">选择供应商</el-button>
+              <el-button type="primary" :style="{'float':'left'}" @click="supplierTableVisible = true">选择供应商</el-button>
               <el-button type="danger" plain :style="{'float':'left'}">删除</el-button>
             </el-col>
           </el-row>
@@ -91,12 +91,35 @@
             layout="total, sizes, prev, pager, next, jumper"
           ></el-pagination>
         </el-tab-pane>
+          <!--选择供应商-->
+          <el-dialog title="选择供应商" :visible.sync="supplierTableVisible" style="height: 90%">
+            <el-container>
+              <el-aside :style="{'width':'200px'}">
+                <el-tree :data="SupplierClassify" :props="defaultProp" default-expand-all @node-click="handleNodeClick"></el-tree>
+              </el-aside>
+              <el-container>
+                <el-main :style="{'padding-top':'0px'}">
+                  <el-table :data="gridData" border>
+                    <el-table-column type="selection" width="42"></el-table-column>
+                    <el-table-column property="date" label="供应商编码"></el-table-column>
+                    <el-table-column property="name" label="供应商名称"></el-table-column>
+                    <el-table-column property="name" label="联系人"></el-table-column>
+                    <el-table-column property="num" label="联系手机"></el-table-column>
+                  </el-table>
+                </el-main>
+                <el-footer style="text-align:right;padding-bottom: 0;height: 40px;">
+                  <el-button @click="dialogVisible = false">取 消</el-button>
+                  <el-button type="primary" @click="dialogVisible = false" style="margin-left: 20px">确 定</el-button>
+                </el-footer>
+              </el-container>
+            </el-container>
+          </el-dialog>
 
         <!--客户-->
         <el-tab-pane label="客户">
           <el-row>
             <el-col>
-              <el-button type="primary" :style="{'float':'left'}">选择客户</el-button>
+              <el-button type="primary" :style="{'float':'left'}" @click="customerTableVisible = true">选择客户</el-button>
               <el-button type="danger" plain :style="{'float':'left'}">删除</el-button>
             </el-col>
           </el-row>
@@ -124,18 +147,41 @@
             layout="total, sizes, prev, pager, next, jumper"
           ></el-pagination>
         </el-tab-pane>
+        <!--选择客户-->
+        <el-dialog title="选择客户" :visible.sync="customerTableVisible" style="height: 90%">
+          <el-container>
+            <el-aside :style="{'width':'200px'}">
+              <el-tree :data="CustomerClassify" :props="defaultProp" default-expand-all @node-click="handleNodeClick"></el-tree>
+            </el-aside>
+            <el-container>
+              <el-main :style="{'padding-top':'0px'}">
+                <el-table :data="cusData" border>
+                  <el-table-column type="selection" width="42"></el-table-column>
+                  <el-table-column property="date" label="客户编码"></el-table-column>
+                  <el-table-column property="name" label="客户名称"></el-table-column>
+                  <el-table-column property="name" label="联系人"></el-table-column>
+                  <el-table-column property="num" label="联系手机"></el-table-column>
+                </el-table>
+              </el-main>
+              <el-footer style="text-align:right;padding-bottom: 0;height: 40px;">
+                <el-button @click="dialogVisible = false">取 消</el-button>
+                <el-button type="primary" @click="dialogVisible = false" style="margin-left: 20px">确 定</el-button>
+              </el-footer>
+            </el-container>
+          </el-container>
+        </el-dialog>
 
         <!--商品-->
         <el-tab-pane label="商品">
           <el-row>
             <el-col>
-              <el-button type="primary" :style="{'float':'left'}">选择商品</el-button>
+              <el-button type="primary" :style="{'float':'left'}" @click="goodsTableVisible = true">选择商品</el-button>
               <el-button type="danger" plain :style="{'float':'left'}">删除</el-button>
             </el-col>
           </el-row>
           <el-table
             ref="multipleTable"
-            :data="customerData"
+            :data="goodsData"
             :style="{'margin-top':'10px'}"
             border
             tooltip-effect="dark"
@@ -160,6 +206,29 @@
             layout="total, sizes, prev, pager, next, jumper"
           ></el-pagination>
         </el-tab-pane>
+        <!--选择商品-->
+        <el-dialog title="选择商品" :visible.sync="goodsTableVisible" style="height: 90%">
+          <el-container>
+            <el-aside :style="{'width':'200px'}">
+              <el-tree :data="GoodsClassify" :props="defaultProp" default-expand-all @node-click="handleNodeClick"></el-tree>
+            </el-aside>
+            <el-container>
+              <el-main :style="{'padding-top':'0px'}">
+                <el-table :data="gooData" border>
+                  <el-table-column type="selection" width="42"></el-table-column>
+                  <el-table-column property="date" label="商品编码"></el-table-column>
+                  <el-table-column property="name" label="商品名称"></el-table-column>
+                  <el-table-column property="name" label="条码"></el-table-column>
+                  <el-table-column property="num" label="规格"></el-table-column>
+                </el-table>
+              </el-main>
+              <el-footer style="text-align:right;padding-bottom: 0;height: 40px;">
+                <el-button @click="dialogVisible = false">取 消</el-button>
+                <el-button type="primary" @click="dialogVisible = false" style="margin-left: 20px">确 定</el-button>
+              </el-footer>
+            </el-container>
+          </el-container>
+        </el-dialog>
 
           <!--仓库-->
           <el-tab-pane label="仓库">
@@ -289,6 +358,7 @@ export default {
         }
       ],
       customerData: [],
+      goodsData:[],
       multipleSelection: [],
       labelPosition: "left",
       form: {
@@ -351,7 +421,68 @@ export default {
       defaultProp: {
           children: 'children',
           label: 'label'
-      }
+      },
+      dialogVisible: false,
+      gridData: [{
+            date: '2016-05-02',
+            name: '王小虎',
+            num: '13800000000'
+        }, {
+            date: '2016-05-04',
+            name: '王小虎',
+            num: '13800000000'
+        }, {
+            date: '2016-05-01',
+            name: '王小虎',
+            num: '13800000000'
+        }, {
+            date: '2016-05-03',
+            name: '王小虎',
+            num: '13800000000'
+        }],
+      supplierTableVisible: false,
+      SupplierClassify: [{
+        label: '一级 1',
+        children: [{
+          label: '二级 1-1',
+          children: [{
+            label: '三级 1-1-1'
+          }]
+        }]
+      }, {
+        label: '一级 2',
+        children: [{
+          label: '二级 2-1',
+          children: [{
+            label: '三级 2-1-1'
+          }]
+        }, {
+          label: '二级 2-2',
+          children: [{
+            label: '三级 2-2-1'
+          }]
+        }]
+      }, {
+        label: '一级 3',
+        children: [{
+          label: '二级 3-1',
+          children: [{
+            label: '三级 3-1-1'
+          }]
+        }, {
+          label: '二级 3-2',
+          children: [{
+            label: '三级 3-2-1'
+          }]
+        }]
+      }],
+      cusData: [],
+      customerTableVisible: false,
+      CustomerClassify: [],
+      gooData: [],
+      goodsTableVisible: false,
+      GoodsClassify: [],
+
     };
   },
   components: {

@@ -1,7 +1,7 @@
 <template>
     <el-container id="gg">
         <el-aside width="200px">
-            <el-tree :data="interfaceSelect" :props="defaultProps" accordion @node-click="handleNodeClick" node-key="id" style="margin-top: 40px"></el-tree>
+            <el-tree :data="interfaceSelect" :props="defaultProps" highlight-current @node-click="handleNodeClick" node-key="id" style="margin-top: 40px"></el-tree>
         </el-aside>
         <el-main>
             <el-form :inline="true" :model="formInlineIF" style="margin-top: 20px">
@@ -26,11 +26,16 @@
             <el-table :data="interfaces" border style="width: 100%" height="680" >
 <!--                <el-table-column type="selection" width="40" :selectable="handle_checkbox"></el-table-column>-->
                 <el-table-column align="center" prop="db" label="原名称"></el-table-column>
+<!--                <el-table-column align="center" prop="dbShow" label="显示名称">-->
+<!--                    <template slot-scope="scope">-->
+<!--                        <span style="margin-right: 10px">{{ scope.row.dbShow }}</span>-->
+<!--                        <i class="el-icon-edit"></i>-->
+<!--                    </template>-->
+<!--                </el-table-column>-->
                 <el-table-column align="center" prop="dbShow" label="显示名称">
-                    <template slot-scope="scope">
-                        <span style="margin-right: 10px">{{ scope.row.dbShow }}</span>
-                        <i class="el-icon-edit"></i>
-                    </template>
+                    <el-input placeholder="请输入内容" v-model="input" clearable>
+                        <i class="el-icon-edit el-input__icon" slot="suffix"></i>
+                    </el-input>
                 </el-table-column>
 
                 <el-table-column align="center"  v-for="(col,index) in NeedShow" :key="index">
@@ -130,6 +135,7 @@
                 }],
                 value: '',
 
+                input: '',
                 interfaces: [{
                     db: '单号',
                     dbShow: '单据编码',
