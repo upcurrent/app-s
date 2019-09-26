@@ -50,7 +50,7 @@
               v-model="scope.row[`${col.prop}`]"
               :disabled="scope.row[`${col.prop}`+'_disable']"
               :indeterminate="scope.row[col.prop+'_indeterminate']"
-              @change="centext_checked(col.prop,scope.row[`${col.prop}`],scope.row.infos,scope.row)"
+              @change="centext_checked(col.prop,scope.row[`${col.prop}`],scope.row.infos,scope.row,true)"
             ></el-checkbox>
           </div>
         </template>
@@ -64,7 +64,7 @@
   </div>
 </template>
  <script>
-import { FunctionList, ColumnsList, BillGroup } from "../../api/api";
+import { FunctionList, ColumnsList, BillGroup, SaveRole } from "../../api/api";
 import event from "../../event/evnet.js";
 export default {
   data() {
@@ -131,9 +131,25 @@ export default {
   },
   methods: {
     save_data() {
-      console.log(this.data);
+      SaveRole(this.data).then(res => {
+        if (res.code) {
+          if (res.code == 1) {
+            this.$message({
+              type: "success",
+              message: "保存成功",
+              duration: 2000
+            });
+          } else {
+            this.$message({
+              type: "warning",
+              message: "保存失败" + res.message,
+              duration: 2000
+            });
+          }
+        }
+      });
     },
-    // 头部选中
+    // 头部点击
     checked_header(field, checked, scope) {
       this.fun_info_map.forEach((value, key) => {
         let obj = this.fun_info_map.get(key);
@@ -152,50 +168,48 @@ export default {
         }
       });
     },
-    // 分组选中
-    centext_checked(field, value, infos, row) {
+    // 分组点击
+    centext_checked(field, value, infos, row, flag) {
       this.columns.forEach(col => {
         if (col.prop == field) {
-          let checked = 0;
-          let not_checked = 0;
+          let check = 0;
           this.checked_list.forEach(checked_box => {
-            if (checked_box[field]) {
-              checked++;
-            } else {
-              not_checked++;
-            }
+            if (checked_box[field]) check++;
           });
-          if (checked > 0 && not_checked > 0) {
-            // 一部分选中
-            col.indeterminate = true;
-            col.checked = false;
-          } else if (checked == 0) {
+          if (check == 0) {
             // 全不选
             col.indeterminate = false;
             col.checked = false;
-          } else if (not_checked == 0) {
+          } else if (check == this.checked_list.length) {
             // 全选
             col.indeterminate = false;
             col.checked = true;
+          } else {
+            // 一部分选中
+            col.indeterminate = true;
+            col.checked = false;
           }
+          console.log(col);
         }
       });
-      infos.forEach(info => {
-        info[field] = value;
-      });
-      let names = this.fun_group_map.get(row.name);
-      names.forEach(name => {
-        let result = this.fun_info_map.get(name);
-        this.function_list.forEach(prop => {
-          result[prop] = value;
+      if (flag) {
+        infos.forEach(info => {
+          info[field] = value;
         });
-      });
+        let names = this.fun_group_map.get(row.name);
+        names.forEach(name => {
+          let result = this.fun_info_map.get(name);
+          result[field] = value;
+        });
+      }
+
       if (row != null) {
         row[field + "_indeterminate"] = false;
       }
     },
     // 单点
     info_checked(field, infos, row, value, name) {
+      console.log(arguments);
       let result = this.fun_info_map.get(name);
       result[field] = value;
       let checked = 0;
@@ -216,12 +230,12 @@ export default {
         // 全不选
         row[field + "_indeterminate"] = false;
         row[field] = false;
-        this.centext_checked(field, false, infos, null);
+        this.centext_checked(field, false, infos, row, false);
       } else if (not_checked == 0) {
         // 全选
-        this.centext_checked(field, true, infos, null);
         row[field + "_indeterminate"] = false;
         row[field] = true;
+        this.centext_checked(field, true, infos, row, false);
       }
     },
     // 表头选择不确定
@@ -272,8 +286,8 @@ export default {
               // checkbox_row[key + "_disable"] = false;
               let check = 0;
               checkbox_row["infos"].forEach(info => {
-                Object.keys(info).forEach(feild => {
-                  if (feild == key && info[key]) check++;
+                Object.keys(info).forEach(field => {
+                  if (field == key && info[key]) check++;
                 });
               });
               if (check == checkbox_row["infos"].length) {

@@ -9,7 +9,6 @@ import VueAxios from 'vue-axios'
 import Clone from 'clone'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
-
 Vue.use(ElementUI);
 Vue.use(VueAxios,axios);
 
@@ -22,7 +21,6 @@ new Vue({
 }).$mount("#app");
 
 Vue.prototype.clone = Clone;
-
 Date.prototype.Format = function(fmt)
 { //author: meizz
   let o = {

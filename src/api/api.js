@@ -53,6 +53,7 @@ export const ColumnsList = params => { return axios.post(`${base}/role/columns/`
 
 export const BillGroup = params => { return axios.post(`${base}/role/infos`,params).then(res => res.data); };
 
+export const SaveRole = params => { return axios.post(`${base}/role/save`,params).then(res => res.data); };
 
 
 
