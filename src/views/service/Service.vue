@@ -106,7 +106,7 @@
                             <el-col :span="20">
                                 <el-form-item >
                                     <el-select v-model="value" @change="item_change" :style="{width:'233px'}">
-                                        <el-option v-for="item,index in options"
+                                        <el-option v-for="(item,index) in options"
                                                    :key="index"
                                                    :label="item.name"
                                                    :value="index">
