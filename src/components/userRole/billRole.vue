@@ -31,30 +31,32 @@
         </template>
       </el-table-column>
       <!-- 其他行 -->
-      <el-table-column align="center" width="119px" v-for="(col,index) in columns" :key="index">
-        <template slot="header" slot-scope="scope">
-          <div v-if="index == 0">{{col.name}}</div>
-          <div v-else>
-            <el-checkbox
-              @change="checked_header(col.prop,col.checked,scope)"
-              v-model="col.checked"
-              :indeterminate="col.indeterminate"
-              :label="col.name"
-            ></el-checkbox>
-          </div>
-        </template>
-        <template slot-scope="scope">
-          <div v-if="index == 0">{{scope.row.name}}</div>
-          <div v-else>
-            <el-checkbox
-              v-model="scope.row[`${col.prop}`]"
-              :disabled="scope.row[`${col.prop}`+'_disable']"
-              :indeterminate="scope.row[col.prop+'_indeterminate']"
-              @change="centext_checked(col.prop,scope.row[`${col.prop}`],scope.row.infos,scope.row,true)"
-            ></el-checkbox>
-          </div>
-        </template>
-      </el-table-column>
+      <template>
+        <el-table-column align="center" width="119px" v-for="(col,index) in columns" :key="index">
+          <template slot="header" slot-scope="scope">
+            <div v-if="index == 0">{{col.name}}</div>
+            <div v-else>
+              <el-checkbox
+                @change="checked_header(col.prop,col.checked,scope)"
+                v-model="col.checked"
+                :indeterminate="col.indeterminate"
+                :label="col.name"
+              ></el-checkbox>
+            </div>
+          </template>
+          <template slot-scope="scope">
+            <div v-if="index == 0">{{scope.row.name}}</div>
+            <div v-else>
+              <el-checkbox
+                v-model="scope.row[`${col.prop}`]"
+                :disabled="scope.row[`${col.prop}`+'_disable']"
+                :indeterminate="scope.row[col.prop+'_indeterminate']"
+                @change="centext_checked(col.prop,scope.row[`${col.prop}`],scope.row.infos,scope.row,true)"
+              ></el-checkbox>
+            </div>
+          </template>
+        </el-table-column>
+      </template>
     </el-table>
     <template>
       <div>
@@ -69,6 +71,72 @@ import event from "../../event/evnet.js";
 export default {
   data() {
     return {
+      columns1: [
+        {
+          prop: "name",
+          name: "模块名称"
+        },
+        {
+          prop: "insert",
+          indeterminate: false,
+          name: "新增",
+          checked: false
+        },
+        {
+          prop: "edit",
+          indeterminate: false,
+          name: "编辑",
+          checked: false
+        },
+        {
+          prop: "del",
+          indeterminate: false,
+          name: "删除",
+          checked: false
+        },
+        {
+          prop: "view",
+          indeterminate: false,
+          name: "查看",
+          checked: false
+        },
+        {
+          prop: "print",
+          indeterminate: false,
+          name: "打印",
+          checked: false
+        },
+        {
+          prop: "audit",
+          indeterminate: false,
+          name: "审核",
+          checked: false
+        },
+        {
+          prop: "reaudit",
+          indeterminate: false,
+          name: "反审核",
+          checked: false
+        },
+        {
+          prop: "cancellation",
+          indeterminate: false,
+          name: "作废",
+          checked: false
+        },
+        {
+          prop: "reusing",
+          indeterminate: false,
+          name: "返作废",
+          checked: false
+        },
+        {
+          prop: "export",
+          indeterminate: false,
+          name: "导出",
+          checked: false
+        }
+      ],
       columns: [],
       example: {
         name: "",
@@ -85,29 +153,30 @@ export default {
         infos: []
       },
       checked_list: [],
-      bookId: 0,
+      bookId: 20,
       function_list: [],
       bill_group: [],
       data: [],
       user_id: 0,
       fun_info_map: new Map(),
-      fun_group_map: new Map()
+      fun_group_map: new Map(),
+      node: null
     };
   },
   mounted() {
-    ColumnsList(1).then(res => {
-      this.columns = res;
-      this.columns.forEach(col => {
-        this.function_list.push(col.prop);
-      });
-    });
     event.$on("load_role", node => {
+      this.node = node;
+      ColumnsList(this.bookId).then(res => {
+        this.columns = res;
+        this.function_list = [];
+        this.columns.forEach(col => {
+          this.function_list.push(col.prop);
+          col.indeterminate = false;
+        });
+      });
       this.fun_info_map = new Map();
       this.data = [];
       this.user_id = node.userId;
-      this.columns.forEach(col => {
-        col.indeterminate = false;
-      });
       FunctionList(node).then(res => {
         this.checked_list = res;
         this.default_data_init();
@@ -130,8 +199,34 @@ export default {
     });
   },
   methods: {
+    formatter_method() {
+      let obj = {};
+      this.function_list.forEach(func => {
+        obj[func] = 0;
+      });
+      let sum = 0;
+      this.checked_list.forEach(check_box => {
+        sum += this.checked_list[0].infos.length;
+        check_box.infos.forEach(info => {
+          this.function_list.forEach(func => {
+            if (info[func]) obj[func]++;
+          });
+        });
+      });
+      this.function_list.forEach(func => {
+        // console.log(sum,obj[func] ,func)
+        if (sum == obj[func]) {
+          this.columns_checked(func);
+        }
+        if (obj[func] == 0) {
+          this.columns_not_checked(func);
+        } else {
+          this.columns_indeterminate(func, false);
+        }
+      });
+    },
     save_data() {
-      SaveRole(this.data).then(res => {
+      SaveRole({ data: this.data, bookId: this.bookId }).then(res => {
         if (res.code) {
           if (res.code == 1) {
             this.$message({
@@ -139,6 +234,7 @@ export default {
               message: "保存成功",
               duration: 2000
             });
+            event.$emit("load_role", this.node);
           } else {
             this.$message({
               type: "warning",
@@ -189,7 +285,6 @@ export default {
             col.indeterminate = true;
             col.checked = false;
           }
-          console.log(col);
         }
       });
       if (flag) {
@@ -209,7 +304,6 @@ export default {
     },
     // 单点
     info_checked(field, infos, row, value, name) {
-      console.log(arguments);
       let result = this.fun_info_map.get(name);
       result[field] = value;
       let checked = 0;
@@ -248,6 +342,7 @@ export default {
     },
     //表头选中
     columns_checked(field) {
+      console.log(field + " _________check");
       this.columns.forEach(col => {
         if (col.prop == field) {
           col.checked = true;
@@ -256,6 +351,7 @@ export default {
     },
     //表头不选中
     columns_not_checked(field) {
+      console.log(field);
       this.columns.forEach(col => {
         if (col.prop == field) {
           col.checked = false;
@@ -265,16 +361,9 @@ export default {
     default_data_init() {
       let map = new Map();
       if (this.checked_list.length != 0) {
-        Object.keys(this.checked_list[0]).forEach(key => {
-          if (
-            key != "name" &&
-            key.includes("_indeterminate") == false &&
-            key.includes("_disable") == false &&
-            key != "infos"
-          ) {
-            map.set(key, 0);
-          }
-        });
+        // this.function_list.forEach(key => {
+        //   map.set(key, 0);
+        // });
         this.checked_list.forEach(checkbox_row => {
           Object.keys(checkbox_row).forEach(key => {
             if (
@@ -300,21 +389,22 @@ export default {
                 checkbox_row[key + "_indeterminate"] = true;
                 checkbox_row[key] = false;
               }
-              if (checkbox_row[key]) {
-                map.set(key, map.get(key) + 1);
-              }
+              // if (checkbox_row[key]) {
+              //   map.set(key, map.get(key) + 1);
+              // }
             }
           });
         });
-        map.forEach((value, key) => {
-          if (value == this.checked_list.length) {
-            this.columns_checked(key);
-          } else if (value == 0) {
-            this.columns_not_checked(key);
-          } else {
-            this.columns_indeterminate(key, true);
-          }
-        });
+        this.formatter_method();
+        // map.forEach((value, key) => {
+        //   if (value == this.checked_list.length) {
+        //     this.columns_checked(key);
+        //   } else if (value == 0) {
+        //     this.columns_not_checked(key);
+        //   } else {
+        //     this.columns_indeterminate(key, true);
+        //   }
+        // });
       }
     }
   }

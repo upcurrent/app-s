@@ -1,20 +1,25 @@
 <template>
   <el-container id="ii">
     <el-aside width="200px">
-      <el-button type="primary" plain style="margin: 30px 0 10px 0" @click="copyTableVisible = true">复制到...</el-button>
+      <el-button
+        type="primary"
+        plain
+        style="margin: 30px 0 10px 0"
+        @click="copyTableVisible = true"
+      >复制到...</el-button>
       <!--复制到...-->
       <el-dialog title="复制到用户" :visible.sync="copyTableVisible">
         <el-tree
-                :data="tree"
-                :props="defaultProps"
-                accordion
-                default-expand-all
-                show-checkbox
-                @node-click="handleNodeClick"
-                :load="load_node"
-                lazy
-                node-key="id"
-                :highlight-current="true"
+          :data="tree"
+          :props="defaultProps"
+          accordion
+          default-expand-all
+          show-checkbox
+          @node-click="handleNodeClick"
+          :load="load_node"
+          lazy
+          node-key="id"
+          :highlight-current="true"
         ></el-tree>
         <el-footer style="text-align:right;padding-bottom: 0;height: 40px;">
           <el-button @click="dialogVisible = false">取 消</el-button>
@@ -83,7 +88,11 @@
         <el-tab-pane label="供应商">
           <el-row>
             <el-col>
-              <el-button type="primary" :style="{'float':'left'}" @click="supplierTableVisible = true">选择供应商</el-button>
+              <el-button
+                type="primary"
+                :style="{'float':'left'}"
+                @click="supplierTableVisible = true"
+              >选择供应商</el-button>
               <el-button type="danger" plain :style="{'float':'left'}">删除</el-button>
             </el-col>
           </el-row>
@@ -111,35 +120,48 @@
             layout="total, sizes, prev, pager, next, jumper"
           ></el-pagination>
         </el-tab-pane>
-          <!--选择供应商-->
-          <el-dialog title="选择供应商" :visible.sync="supplierTableVisible">
+        <!--选择供应商-->
+        <el-dialog title="选择供应商" :visible.sync="supplierTableVisible">
+          <el-container>
+            <el-aside :style="{'width':'200px'}">
+              <el-tree
+                :data="SupplierClassify"
+                :props="defaultProp"
+                default-expand-all
+                @node-click="handleNodeClick"
+              ></el-tree>
+            </el-aside>
             <el-container>
-              <el-aside :style="{'width':'200px'}">
-                <el-tree :data="SupplierClassify" :props="defaultProp" default-expand-all @node-click="handleNodeClick"></el-tree>
-              </el-aside>
-              <el-container>
-                <el-main :style="{'padding-top':'0px'}">
-                  <el-table :data="supData" border>
-                    <el-table-column type="selection" width="42"></el-table-column>
-                    <el-table-column property="date" label="供应商编码"></el-table-column>
-                    <el-table-column property="name" label="供应商名称"></el-table-column>
-                    <el-table-column property="name" label="联系人"></el-table-column>
-                    <el-table-column property="num" label="联系手机"></el-table-column>
-                  </el-table>
-                </el-main>
-                <el-footer style="text-align:right;padding-bottom: 0;height: 40px;">
-                  <el-button @click="dialogVisible = false">取 消</el-button>
-                  <el-button type="primary" @click="dialogVisible = false" style="margin-left: 20px">确 定</el-button>
-                </el-footer>
-              </el-container>
+              <el-main :style="{'padding-top':'0px'}">
+                <el-table :data="supData" border>
+                  <el-table-column type="selection" width="42"></el-table-column>
+                  <el-table-column property="date" label="供应商编码"></el-table-column>
+                  <el-table-column property="name" label="供应商名称"></el-table-column>
+                  <el-table-column property="name" label="联系人"></el-table-column>
+                  <el-table-column property="num" label="联系手机"></el-table-column>
+                </el-table>
+              </el-main>
+              <el-footer style="text-align:right;padding-bottom: 0;height: 40px;">
+                <el-button @click="dialogVisible = false">取 消</el-button>
+                <el-button
+                  type="primary"
+                  @click="dialogVisible = false"
+                  style="margin-left: 20px"
+                >确 定</el-button>
+              </el-footer>
             </el-container>
-          </el-dialog>
+          </el-container>
+        </el-dialog>
 
         <!--客户-->
         <el-tab-pane label="客户">
           <el-row>
             <el-col>
-              <el-button type="primary" :style="{'float':'left'}" @click="customerTableVisible = true">选择客户</el-button>
+              <el-button
+                type="primary"
+                :style="{'float':'left'}"
+                @click="customerTableVisible = true"
+              >选择客户</el-button>
               <el-button type="danger" plain :style="{'float':'left'}">删除</el-button>
             </el-col>
           </el-row>
@@ -171,7 +193,12 @@
         <el-dialog title="选择客户" :visible.sync="customerTableVisible">
           <el-container>
             <el-aside :style="{'width':'200px'}">
-              <el-tree :data="CustomerClassify" :props="defaultProp" default-expand-all @node-click="handleNodeClick"></el-tree>
+              <el-tree
+                :data="CustomerClassify"
+                :props="defaultProp"
+                default-expand-all
+                @node-click="handleNodeClick"
+              ></el-tree>
             </el-aside>
             <el-container>
               <el-main :style="{'padding-top':'0px'}">
@@ -185,7 +212,11 @@
               </el-main>
               <el-footer style="text-align:right;padding-bottom: 0;height: 40px;">
                 <el-button @click="dialogVisible = false">取 消</el-button>
-                <el-button type="primary" @click="dialogVisible = false" style="margin-left: 20px">确 定</el-button>
+                <el-button
+                  type="primary"
+                  @click="dialogVisible = false"
+                  style="margin-left: 20px"
+                >确 定</el-button>
               </el-footer>
             </el-container>
           </el-container>
@@ -195,7 +226,11 @@
         <el-tab-pane label="商品">
           <el-row>
             <el-col>
-              <el-button type="primary" :style="{'float':'left'}" @click="goodsTableVisible = true">选择商品</el-button>
+              <el-button
+                type="primary"
+                :style="{'float':'left'}"
+                @click="goodsTableVisible = true"
+              >选择商品</el-button>
               <el-button type="danger" plain :style="{'float':'left'}">删除</el-button>
             </el-col>
           </el-row>
@@ -230,7 +265,12 @@
         <el-dialog title="选择商品" :visible.sync="goodsTableVisible">
           <el-container>
             <el-aside :style="{'width':'200px'}">
-              <el-tree :data="GoodsClassify" :props="defaultProp" default-expand-all @node-click="handleNodeClick"></el-tree>
+              <el-tree
+                :data="GoodsClassify"
+                :props="defaultProp"
+                default-expand-all
+                @node-click="handleNodeClick"
+              ></el-tree>
             </el-aside>
             <el-container>
               <el-main :style="{'padding-top':'0px'}">
@@ -244,7 +284,11 @@
               </el-main>
               <el-footer style="text-align:right;padding-bottom: 0;height: 40px;">
                 <el-button @click="dialogVisible = false">取 消</el-button>
-                <el-button type="primary" @click="dialogVisible = false" style="margin-left: 20px">确 定</el-button>
+                <el-button
+                  type="primary"
+                  @click="dialogVisible = false"
+                  style="margin-left: 20px"
+                >确 定</el-button>
               </el-footer>
             </el-container>
           </el-container>
@@ -252,30 +296,26 @@
 
         <!--仓库-->
         <el-tab-pane label="仓库">
-            <el-tree
-                    :data="cangku"
-                    show-checkbox
-                    node-key="id"
-                    default-expand-all
-                    @node-click="node_click"
-                    :expand-on-click-node="false"
-                    :props="defaultProp">
-            </el-tree>
-            <el-footer style="margin: 20px 0 0 10px">
-                <el-button type="primary">保存</el-button>
-                <el-button>重置</el-button>
-            </el-footer>
+          <el-tree
+            :data="cangku"
+            show-checkbox
+            node-key="id"
+            default-expand-all
+            @node-click="node_click"
+            :expand-on-click-node="false"
+            :props="defaultProp"
+          ></el-tree>
+          <el-footer style="margin: 20px 0 0 10px">
+            <el-button type="primary">保存</el-button>
+            <el-button>重置</el-button>
+          </el-footer>
         </el-tab-pane>
       </el-tabs>
     </el-main>
   </el-container>
 </template>
 <script>
-import {
-  getALLUserNode,
-  AppDBNode,
-  RoleUserNode,
-} from "../../api/api";
+import { getALLUserNode, AppDBNode, RoleUserNode } from "../../api/api";
 import event from "../../event/evnet.js";
 import billRole from "@/components/userRole/billRole.vue";
 export default {
@@ -287,10 +327,10 @@ export default {
       defaultProps: {
         children: "children",
         label: "name",
-        isLeaf:function(data, node){
-          if(node.level == 3){
+        isLeaf: function(data, node) {
+          if (node.level == 3) {
             return true;
-          }else{
+          } else {
             return false;
           }
         }
@@ -377,7 +417,7 @@ export default {
         }
       ],
       customerData: [],
-      goodsData:[],
+      goodsData: [],
       multipleSelection: [],
       labelPosition: "left",
       form: {
@@ -390,127 +430,167 @@ export default {
         deliveryPrice: false,
         customPrice: false
       },
-      cangku:[{
+      cangku: [
+        {
           id: 1,
-          label: '公司总部',
-          checked:false,
-          children: [{
+          label: "公司总部",
+          checked: false,
+          children: [
+            {
               id: 4,
-              label:'公司总部零售仓库',
-              checked:false,
-              children: [{
+              label: "公司总部零售仓库",
+              checked: false,
+              children: [
+                {
                   id: 9,
-                  label: '仓库 1',
-                  checked:false,
-              },{
+                  label: "仓库 1",
+                  checked: false
+                },
+                {
                   id: 10,
-                  label: '仓库 2',
-                  checked:false,
-              }]
-          }]
-      },{
+                  label: "仓库 2",
+                  checked: false
+                }
+              ]
+            }
+          ]
+        },
+        {
           id: 2,
-          label: '深圳分公司',
-          checked:false,
-          children: [{
+          label: "深圳分公司",
+          checked: false,
+          children: [
+            {
               id: 5,
-              label: '深圳分公司总仓库',
-              checked:false
-          },{
+              label: "深圳分公司总仓库",
+              checked: false
+            },
+            {
               id: 6,
-              label: '深圳分公司福田区仓库',
-              checked:false
-
-          }]
-      },{
+              label: "深圳分公司福田区仓库",
+              checked: false
+            }
+          ]
+        },
+        {
           id: 3,
-          label: '广州分公司',
-          checked:false,
-          children: [{
+          label: "广州分公司",
+          checked: false,
+          children: [
+            {
               id: 7,
-              label: '广州分公司总仓库',
-              checked:false
-          },{
+              label: "广州分公司总仓库",
+              checked: false
+            },
+            {
               id: 8,
-              checked:false,
+              checked: false,
 
-              label: '广州分公司越秀区仓库'
-          }]
-      }],
+              label: "广州分公司越秀区仓库"
+            }
+          ]
+        }
+      ],
       defaultProp: {
-          children: 'children',
-          label: 'label'
+        children: "children",
+        label: "label"
       },
       dialogVisible: false,
-      supData: [{
-            date: '2016-05-02',
-            name: '王小虎',
-            num: '13800000000'
-        }, {
-            date: '2016-05-04',
-            name: '王小虎',
-            num: '13800000000'
-        }, {
-            date: '2016-05-01',
-            name: '王小虎',
-            num: '13800000000'
-        }, {
-            date: '2016-05-03',
-            name: '王小虎',
-            num: '13800000000'
-        }],
+      supData: [
+        {
+          date: "2016-05-02",
+          name: "王小虎",
+          num: "13800000000"
+        },
+        {
+          date: "2016-05-04",
+          name: "王小虎",
+          num: "13800000000"
+        },
+        {
+          date: "2016-05-01",
+          name: "王小虎",
+          num: "13800000000"
+        },
+        {
+          date: "2016-05-03",
+          name: "王小虎",
+          num: "13800000000"
+        }
+      ],
       supplierTableVisible: false,
-      SupplierClassify: [{
-        label: '一级 1',
-        children: [{
-          label: '二级 1-1',
-          children: [{
-            label: '三级 1-1-1'
-          }]
-        }]
-      }, {
-        label: '一级 2',
-        children: [{
-          label: '二级 2-1',
-          children: [{
-            label: '三级 2-1-1'
-          }]
-        }, {
-          label: '二级 2-2',
-          children: [{
-            label: '三级 2-2-1'
-          }]
-        }]
-      }, {
-        label: '一级 3',
-        children: [{
-          label: '二级 3-1',
-          children: [{
-            label: '三级 3-1-1'
-          }]
-        }, {
-          label: '二级 3-2',
-          children: [{
-            label: '三级 3-2-1'
-          }]
-        }]
-      }],
+      SupplierClassify: [
+        {
+          label: "一级 1",
+          children: [
+            {
+              label: "二级 1-1",
+              children: [
+                {
+                  label: "三级 1-1-1"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          label: "一级 2",
+          children: [
+            {
+              label: "二级 2-1",
+              children: [
+                {
+                  label: "三级 2-1-1"
+                }
+              ]
+            },
+            {
+              label: "二级 2-2",
+              children: [
+                {
+                  label: "三级 2-2-1"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          label: "一级 3",
+          children: [
+            {
+              label: "二级 3-1",
+              children: [
+                {
+                  label: "三级 3-1-1"
+                }
+              ]
+            },
+            {
+              label: "二级 3-2",
+              children: [
+                {
+                  label: "三级 3-2-1"
+                }
+              ]
+            }
+          ]
+        }
+      ],
       cusData: [],
       customerTableVisible: false,
       CustomerClassify: [],
       gooData: [],
       goodsTableVisible: false,
-      GoodsClassify: [],
-
+      GoodsClassify: []
     };
   },
   components: {
     billRole: billRole
   },
   methods: {
-    node_click(node){
-          node.checked = !node.checked;
-      },
+    node_click(node) {
+      node.checked = !node.checked;
+    },
     load_node(node, resolve) {
       if (node.level == 1) {
         if (!node.isLeaf && node.data.id) {

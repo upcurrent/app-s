@@ -47,13 +47,13 @@ export const AppDBNode = params => { return axios.post(`${base}/user/db_node/`+p
 export const getALLUserNode = params => { return axios.post(`${base}/user/app_node`, params).then(res => res.data); };
 
 //##################################################
-export const FunctionList = params => { return axios.post(`${base}/role/fall_map/`,params, null).then(res => res.data); };
+export const FunctionList = params => { return axios.post(`${base}/role/fall_map/`,params).then(res => res.data); };
 
 export const ColumnsList = params => { return axios.post(`${base}/role/columns/`+params).then(res => res.data); };
 
-export const BillGroup = params => { return axios.post(`${base}/role/infos`,params).then(res => res.data); };
+export const BillGroup = params => { return axios.post(`${base}/role/group`,params).then(res => res.data); };
 
-export const SaveRole = params => { return axios.post(`${base}/role/save`,params).then(res => res.data); };
+export const SaveRole = params => { return axios.post(`${base}/role/save/`+params.bookId,params.data).then(res => res.data); };
 
 
 
